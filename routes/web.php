@@ -26,6 +26,7 @@ Auth::routes(['verify' => true]);  // Ini akan menambahkan semua route autentika
 // Public routes (tidak perlu login)
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/book/{id}', [HomeController::class, 'showBook'])->name('book.show');
+Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/anggota/register', [AnggotaController::class, 'create'])->name('anggota.create');
 Route::post('/anggota/store', [AnggotaController::class, 'store'])->name('anggota.store');
 

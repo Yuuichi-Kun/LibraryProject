@@ -10,7 +10,7 @@
       <h1 data-aos="fade-up">Jelajahi Dunia Pengetahuan di Perpustakaan Kami</h1>
       <p data-aos="fade-up" data-aos-delay="100">Temukan ribuan koleksi buku, jurnal, dan sumber daya digital untuk mendukung pembelajaran Anda</p>
       <div class="d-flex flex-column flex-md-row" data-aos="fade-up" data-aos-delay="200">
-        <a href="#about" class="btn-get-started">Cari Buku <i class="bi bi-search"></i></a>
+        <a href="{{ route('books.index') }}" class="btn-get-started">Cari Buku <i class="bi bi-search"></i></a>
         <a href="#" class="glightbox btn-watch-video d-flex align-items-center justify-content-center ms-0 ms-md-4 mt-4 mt-md-0"><i class="bi bi-journal-richtext"></i><span>Cara Peminjaman</span></a>
       </div>
     </div>
@@ -36,7 +36,7 @@
           Perpustakaan kami adalah pusat pembelajaran yang menyediakan akses ke berbagai sumber pengetahuan. Dengan koleksi yang terus diperbarui dan fasilitas modern, kami berkomitmen untuk mendukung kebutuhan literasi dan edukasi masyarakat.
         </p>
         <div class="text-center text-lg-start">
-          <a href="#" class="btn-read-more d-inline-flex align-items-center justify-content-center align-self-center">
+          <a href="{{ route('about') }}" class="btn-read-more d-inline-flex align-items-center justify-content-center align-self-center">
             <span>Selengkapnya</span>
             <i class="bi bi-arrow-right"></i>
           </a>
