@@ -169,7 +169,7 @@
           <!-- Recent Activity -->
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Recent Activity</h5>
+              <h5 class="card-title">Aktivitas Terbaru</h5>
               <div class="activity">
                 @forelse($recentActivities as $activity)
                   <div class="activity-item d-flex">
@@ -181,17 +181,17 @@
                     <div class="activity-content">
                       {{ $activity->anggota->nama_anggota }} 
                       @if($activity->status_approval == 'pending')
-                        requested to borrow
+                        mengajukan peminjaman
                       @elseif($activity->status_approval == 'approved')
-                        borrowed
+                        meminjam
                       @else
-                        was rejected to borrow
+                        ditolak meminjam
                       @endif
                       <a href="#" class="fw-bold text-dark">{{ $activity->pustaka->judul_pustaka }}</a>
                     </div>
                   </div>
                 @empty
-                  <div class="text-center py-3">No recent activities</div>
+                  <div class="text-center py-3">Belum ada aktivitas</div>
                 @endforelse
               </div>
             </div>
@@ -200,18 +200,18 @@
           <!-- Due Returns -->
           <div class="card">
             <div class="card-body pb-0">
-              <h5 class="card-title">Due Returns Today</h5>
+              <h5 class="card-title">Jatuh Tempo Hari Ini</h5>
               <div class="news">
                 @forelse($dueReturns as $return)
                   <div class="post-item clearfix">
                     <h4><a href="#">{{ $return->pustaka->judul_pustaka }}</a></h4>
                     <p>
-                      Borrowed by: {{ $return->anggota->nama_anggota }}<br>
-                      Due: {{ $return->tgl_kembali_formatted }}
+                      Peminjam: {{ $return->anggota->nama_anggota }}<br>
+                      Jatuh Tempo: {{ $return->tgl_kembali_formatted }}
                     </p>
                   </div>
                 @empty
-                  <div class="text-center py-3">No books due today</div>
+                  <div class="text-center py-3">Tidak ada buku yang jatuh tempo hari ini</div>
                 @endforelse
               </div>
             </div>
