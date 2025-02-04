@@ -115,4 +115,63 @@ class Transaksi extends Model
         
         return 'Dipinjam';
     }
+
+    /**
+     * Menghitung denda keterlambatan
+     * @return int|null
+     */
+    public function getDenda()
+    {
+        // Jika belum dikembalikan dan sudah melewati batas waktu
+        if (!$this->tgl_pengembalian && $this->isOverdue()) {
+            // Hitung selisih hari dari batas waktu kembali sampai hari ini
+            $hariTerlambat = floor(max(0, Carbon::parse($this->tgl_kembali)->floatDiffInDays(now())));
+            
+            // Ambil denda per hari dari data pustaka
+            $dendaPerHari = $this->pustaka->denda_terlambat;
+            
+            // Hitung total denda
+            return (int)($hariTerlambat * $dendaPerHari);
+        }
+        
+        // Jika sudah dikembalikan dan terlambat
+        if ($this->tgl_pengembalian && Carbon::parse($this->tgl_pengembalian)->gt($this->tgl_kembali)) {
+            // Hitung selisih hari dari batas waktu kembali sampai tanggal pengembalian
+            $hariTerlambat = floor(max(0, Carbon::parse($this->tgl_kembali)->floatDiffInDays(Carbon::parse($this->tgl_pengembalian))));
+            
+            // Ambil denda per hari dari data pustaka
+            $dendaPerHari = $this->pustaka->denda_terlambat;
+            
+            // Hitung total denda
+            return (int)($hariTerlambat * $dendaPerHari);
+        }
+        
+        return null;
+    }
+
+    /**
+     * Mendapatkan jumlah hari keterlambatan
+     * @return int
+     */
+    public function getHariTerlambat()
+    {
+        if (!$this->tgl_pengembalian) {
+            return (int)floor(max(0, Carbon::parse($this->tgl_kembali)->floatDiffInDays(now())));
+        }
+        
+        return (int)floor(max(0, Carbon::parse($this->tgl_kembali)->floatDiffInDays(Carbon::parse($this->tgl_pengembalian))));
+    }
+
+    /**
+     * Format denda ke dalam format rupiah
+     * @return string|null
+     */
+    public function getDendaFormatted()
+    {
+        $denda = $this->getDenda();
+        if ($denda !== null) {
+            return 'Rp ' . number_format($denda, 0, ',', '.');
+        }
+        return null;
+    }
 }

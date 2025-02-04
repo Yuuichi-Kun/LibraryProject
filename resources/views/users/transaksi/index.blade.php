@@ -30,6 +30,7 @@
                                         <th>Tanggal Kembali</th>
                                         <th>Status</th>
                                         <th>Tanggal Pengembalian</th>
+                                        <th>Keterangan</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -39,30 +40,50 @@
                                             <td>{{ $transaksi->firstItem() + $index }}</td>
                                             <td>{{ $t->pustaka->judul_pustaka }}</td>
                                             <td>{{ $t->anggota->nama_anggota }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($t->tgl_pinjam)->format('d/m/Y') }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($t->tgl_kembali)->format('d/m/Y') }}</td>
+                                            <td>{{ $t->tgl_pinjam_formatted }}</td>
+                                            <td>{{ $t->tgl_kembali_formatted }}</td>
                                             <td>
                                                 @if($t->status_approval == 'pending')
                                                     <span class="badge bg-warning">Menunggu Persetujuan</span>
                                                 @elseif($t->status_approval == 'approved')
-                                                    <span class="badge bg-success">Disetujui</span>
+                                                    @if($t->tgl_pengembalian)
+                                                        <span class="badge bg-info">Dikembalikan</span>
+                                                    @elseif($t->isOverdue())
+                                                        <span class="badge bg-danger">Terlambat</span>
+                                                    @else
+                                                        <span class="badge bg-primary">Dipinjam</span>
+                                                    @endif
                                                 @else
                                                     <span class="badge bg-danger">Ditolak</span>
                                                 @endif
                                             </td>
+                                            <td>{{ $t->tgl_pengembalian_formatted }}</td>
                                             <td>
-                                                @if($t->tgl_pengembalian)
-                                                    {{ \Carbon\Carbon::parse($t->tgl_pengembalian)->format('d/m/Y') }}
+                                                @if($t->status_approval == 'rejected')
+                                                    <i class="bi bi-info-circle text-danger" 
+                                                       data-bs-toggle="tooltip" 
+                                                       title="{{ $t->reject_reason }}"></i>
+                                                    {{ Str::limit($t->reject_reason, 30) }}
+                                                @elseif($t->isOverdue())
+                                                    <span class="text-danger">
+                                                        Terlambat {{ $t->getHariTerlambat() }} hari
+                                                        @if($t->getDenda())
+                                                            <br>
+                                                            <strong>Denda: {{ $t->getDendaFormatted() }}</strong>
+                                                        @endif
+                                                    </span>
                                                 @else
-                                                    <span class="text-muted">-</span>
+                                                    <span class="text-success">Belum ada denda</span>
                                                 @endif
                                             </td>
                                             <td>
                                                 @if($t->status_approval == 'approved' && !$t->tgl_pengembalian)
-                                                    <form action="{{ route('transaksi.return', ['id' => $t->id_transaksi]) }}" method="POST" class="d-inline">
+                                                    <form action="{{ route('transaksi.return', ['id' => $t->id_transaksi]) }}" 
+                                                          method="POST" class="d-inline">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="submit" class="btn btn-sm btn-primary" onclick="return confirm('Apakah Anda yakin ingin mengembalikan buku ini?')">
+                                                        <button type="submit" class="btn btn-sm btn-primary" 
+                                                                onclick="return confirm('Apakah Anda yakin ingin mengembalikan buku ini?')">
                                                             Kembalikan
                                                         </button>
                                                     </form>
@@ -71,7 +92,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="8" class="text-center py-4">
+                                            <td colspan="9" class="text-center py-4">
                                                 Belum ada data transaksi
                                             </td>
                                         </tr>

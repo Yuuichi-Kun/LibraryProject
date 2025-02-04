@@ -65,9 +65,13 @@
                                                        data-bs-toggle="tooltip" 
                                                        title="{{ $t->reject_reason }}"></i>
                                                     {{ Str::limit($t->reject_reason, 30) }}
-                                                @elseif($t->isOverdue() && !$t->tgl_pengembalian)
+                                                @elseif($t->isOverdue())
                                                     <span class="text-danger">
                                                         Terlambat {{ now()->diffInDays($t->tgl_kembali) }} hari
+                                                        @if($t->getDenda())
+                                                            <br>
+                                                            <strong>Denda: {{ $t->getDendaFormatted() }}</strong>
+                                                        @endif
                                                     </span>
                                                 @endif
                                             </td>
